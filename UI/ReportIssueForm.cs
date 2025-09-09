@@ -1,4 +1,5 @@
 ﻿using PROG7312_POE_Part1.Domain;
+using PROG7312_POE_Part1.UI;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -8,125 +9,117 @@ namespace PROG7312_POE_Part1.UI
 {
     public class ReportIssueForm : Form
     {
-        private Label lblHeader;
-
-        private Label lblLocation;
         private TextBox txtLocation;
-
-        private Label lblCategory;
         private ComboBox cmbCategory;
-
-        private Label lblDescription;
         private RichTextBox rtbDescription;
-
-        private Label lblAttachments;
         private ListBox lstAttachments;
         private Button btnAttach;
-
         private ProgressBar pbEngagement;
         private Label lblEncouragement;
-
         private Button btnSubmit;
         private Button btnBack;
-
         private OpenFileDialog openFileDialog;
+        private ToolTip tips;
 
         public ReportIssueForm()
         {
+            UiTheme.ApplyFormDefaults(this, new Size(800, 600));
             Text = "Report an Issue";
-            StartPosition = FormStartPosition.CenterScreen;
-            MinimumSize = new Size(720, 560);
-            Font = new Font("Segoe UI", 10);
 
-            // Background colour
-            BackColor = Color.WhiteSmoke;
+            Controls.Add(UiTheme.BuildHeader("Report an Issue"));
+            Controls.Add(UiTheme.BuildFooter());
 
-            // Header
-            lblHeader = new Label
-            {
-                Text = "Report an Issue",
-                Font = new Font("Segoe UI Semibold", 18),
-                AutoSize = true,
-                Location = new Point(20, 18),
-                ForeColor = Color.DarkGreen
-            };
+            tips = new ToolTip();
 
-            // Location
-            lblLocation = new Label
+            // 2-column grid for labels/inputs
+            var grid = new TableLayoutPanel
             {
-                Text = "Location:",
-                AutoSize = true,
-                Location = new Point(24, 70)
+                Dock = DockStyle.Fill,
+                Padding = new Padding(16),
+                ColumnCount = 2,
+                RowCount = 8
             };
-            txtLocation = new TextBox
-            {
-                Location = new Point(120, 66),
-                Width = 540,
-                
-            };
-            txtLocation.TextChanged += (_, __) => UpdateEngagement();
+            grid.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140)); // labels
+            grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));  // inputs
 
-            // Category
-            lblCategory = new Label
-            {
-                Text = "Category:",
-                AutoSize = true,
-                Location = new Point(24, 110)
-            };
-            cmbCategory = new ComboBox
-            {
-                Location = new Point(120, 106),
-                Width = 260,
-                DropDownStyle = ComboBoxStyle.DropDownList
-            };
+            var lblLocation = new Label { Text = "Location:", AutoSize = true };
+            UiTheme.StyleSectionHeader(lblLocation);
+            txtLocation = new TextBox { Dock = DockStyle.Fill };
+            tips.SetToolTip(txtLocation, "Example: 123 Main Rd, Ward 4, Cape Town");
+
+            var lblCategory = new Label { Text = "Category:", AutoSize = true };
+            UiTheme.StyleSectionHeader(lblCategory);
+            cmbCategory = new ComboBox { Dock = DockStyle.Left, Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
             cmbCategory.Items.AddRange(new object[]
             {
-                "Sanitation",
-                "Roads",
-                "Water",
-                "Electricity",
-                "Stormwater",
-                "Parks & Recreation",
-                "Other"
+                "Sanitation", "Roads", "Water", "Electricity", "Stormwater", "Parks & Recreation", "Other"
             });
-            cmbCategory.SelectedIndexChanged += (_, __) => UpdateEngagement();
 
-            // Description
-            lblDescription = new Label
-            {
-                Text = "Description:",
-                AutoSize = true,
-                Location = new Point(24, 152)
-            };
-            rtbDescription = new RichTextBox
-            {
-                Location = new Point(120, 148),
-                Size = new Size(540, 140)
-            };
-            rtbDescription.TextChanged += (_, __) => UpdateEngagement();
+            var lblDescription = new Label { Text = "Description:", AutoSize = true };
+            UiTheme.StyleSectionHeader(lblDescription);
+            rtbDescription = new RichTextBox { Dock = DockStyle.Fill, Height = 140 };
 
-            // Attachments
-            lblAttachments = new Label
-            {
-                Text = "Attachments:",
-                AutoSize = true,
-                Location = new Point(24, 300)
-            };
-            lstAttachments = new ListBox
-            {
-                Location = new Point(120, 300),
-                Size = new Size(420, 90)
-            };
-            btnAttach = new Button
-            {
-                Text = "Attach Files…",
-                Location = new Point(550, 300),
-                Size = new Size(110, 32),
-                BackColor = Color.SlateGray,
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat
-            };
+            var lblAttachments = new Label { Text = "Attachments:", AutoSize = true };
+            UiTheme.StyleSectionHeader(lblAttachments);
+
+            // attachments area with a right-aligned button
+            lstAttachments = new ListBox { Dock = DockStyle.Fill, Height = 90 };
+            btnAttach = new Button { Text = "Attach Files…", Width = 130, Height = 32 };
+            UiTheme.StyleSecondary(btnAttach);
             btnAttach.Click += BtnAttach_Click;
+
+            var attachRow = new TableLayoutPanel { ColumnCount = 2, Dock = DockStyle.Fill };
+            attachRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            attachRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150));
+            attachRow.Controls.Add(lstAttachments, 0, 0);
+            attachRow.Controls.Add(btnAttach, 1, 0);
+
+            // engagement
+            pbEngagement = new ProgressBar { Dock = DockStyle.Fill, Minimum = 0, Maximum = 100, Value = 0 };
+            lblEncouragement = new Label { Text = "Let’s make your report as clear as possible.", AutoSize = true, ForeColor = Color.SteelBlue };
+
+            // buttons bar
+            btnSubmit = new Button { Text = "Submit", Width = 100, Height = 36 };
+            UiTheme.StylePrimary(btnSubmit);
+            btnSubmit.Click += BtnSubmit_Click;
+
+            btnBack = new Button { Text = "Back to Main Menu", Width = 150, Height = 36 };
+            UiTheme.StyleSecondary(btnBack);
+            btnBack.Click += (_, __) => Close();
+
+            var bottomBar = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Bottom,
+                FlowDirection = FlowDirection.RightToLeft,
+                Padding = new Padding(8),
+                AutoSize = true
+            };
+            bottomBar.Controls.Add(btnBack);
+            bottomBar.Controls.Add(btnSubmit);
+
+            // add rows to grid
+            grid.Controls.Add(lblLocation, 0, 0);
+            grid.Controls.Add(txtLocation, 1, 0);
+
+            grid.Controls.Add(lblCategory, 0, 1);
+            grid.Controls.Add(cmbCategory, 1, 1);
+
+            grid.Controls.Add(lblDescription, 0, 2);
+            grid.Controls.Add(rtbDescription, 1, 2);
+
+            grid.Controls.Add(lblAttachments, 0, 3);
+            grid.Controls.Add(attachRow, 1, 3);
+
+            grid.Controls.Add(new Label { Text = "Completion:", AutoSize = true }, 0, 4);
+            grid.Controls.Add(pbEngagement, 1, 4);
+
+            grid.Controls.Add(new Label { Text = "", AutoSize = true }, 0, 5);
+            grid.Controls.Add(lblEncouragement, 1, 5);
+
+            // Dock order: header (Top), footer (Bottom), bottomBar (Bottom), grid (Fill)
+            Controls.Add(bottomBar);
+            Controls.Add(grid);
+            grid.BringToFront();
 
             openFileDialog = new OpenFileDialog
             {
@@ -135,57 +128,10 @@ namespace PROG7312_POE_Part1.UI
                 Multiselect = true
             };
 
-            // Engagement feature
-            pbEngagement = new ProgressBar
-            {
-                Location = new Point(24, 410),
-                Size = new Size(636, 18),
-                Minimum = 0,
-                Maximum = 100,
-                Value = 0
-            };
-            lblEncouragement = new Label
-            {
-                Text = "Let’s make your report as clear as possible.",
-                AutoSize = true,
-                ForeColor = Color.SteelBlue,
-                Location = new Point(24, 432)
-            };
-
-            // Buttons
-            btnSubmit = new Button
-            {
-                Text = "Submit",
-                Location = new Point(480, 460),
-                Size = new Size(90, 36),
-                BackColor = Color.SeaGreen,
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat
-            };
-            btnSubmit.Click += BtnSubmit_Click;
-
-            btnBack = new Button
-            {
-                Text = "Back to Main Menu",
-                Location = new Point(580, 460),
-                Size = new Size(140, 36),
-                BackColor = Color.SlateGray,
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat
-            };
-            btnBack.Click += (_, __) => Close();
-
-            // Add controls
-            Controls.AddRange(new Control[]
-            {
-                lblHeader,
-                lblLocation, txtLocation,
-                lblCategory, cmbCategory,
-                lblDescription, rtbDescription,
-                lblAttachments, lstAttachments, btnAttach,
-                pbEngagement, lblEncouragement,
-                btnSubmit, btnBack
-            });
+            // engagement updates
+            txtLocation.TextChanged += (_, __) => UpdateEngagement();
+            cmbCategory.SelectedIndexChanged += (_, __) => UpdateEngagement();
+            rtbDescription.TextChanged += (_, __) => UpdateEngagement();
         }
 
         private void BtnAttach_Click(object sender, EventArgs e)
@@ -203,7 +149,6 @@ namespace PROG7312_POE_Part1.UI
 
         private void BtnSubmit_Click(object sender, EventArgs e)
         {
-            // Basic validation
             if (string.IsNullOrWhiteSpace(txtLocation.Text))
             {
                 MessageBox.Show("Please enter the location.", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -234,13 +179,13 @@ namespace PROG7312_POE_Part1.UI
             IssueRepository.Add(issue);
 
             MessageBox.Show(
-                $"Thank you! Your issue has been submitted.\n\nReference: {issue.Id}\nStatus: {issue.Status}\nSubmitted: {issue.CreatedAt}",
+                $"Thank you! Your issue has been submitted.\n\nReference: {issue.Id}\nStatus: {issue.Status}\nSubmitted: {issue.CreatedAt:g}",
                 "Submitted",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
 
-            // Reset form
+            // reset
             txtLocation.Clear();
             cmbCategory.SelectedIndex = -1;
             rtbDescription.Clear();

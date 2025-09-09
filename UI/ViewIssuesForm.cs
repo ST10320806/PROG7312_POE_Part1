@@ -1,4 +1,5 @@
 ﻿using PROG7312_POE_Part1.Domain;
+using PROG7312_POE_Part1.UI;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -12,28 +13,56 @@ namespace PROG7312_POE_Part1.UI
 
         public ViewIssuesForm()
         {
+            UiTheme.ApplyFormDefaults(this, new Size(900, 560));
             Text = "All Reported Issues";
-            StartPosition = FormStartPosition.CenterScreen;
-            MinimumSize = new Size(820, 500);
-            Font = new Font("Segoe UI", 10);
+
+            Controls.Add(UiTheme.BuildHeader("All Reported Issues"));
+            Controls.Add(UiTheme.BuildFooter());
 
             dgvIssues = new DataGridView
             {
-                Location = new Point(20, 20),
-                Size = new Size(760, 360),
+                Dock = DockStyle.Fill,
                 ReadOnly = true,
                 AllowUserToAddRows = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                MultiSelect = false
             };
 
-            // Define columns
             dgvIssues.Columns.Add("Id", "Reference ID");
             dgvIssues.Columns.Add("Location", "Location");
             dgvIssues.Columns.Add("Category", "Category");
             dgvIssues.Columns.Add("Status", "Status");
             dgvIssues.Columns.Add("CreatedAt", "Date Reported");
 
-            // Fill data from IssueRepository (LinkedList<Issue>)
+            ReloadGrid();
+
+            dgvIssues.CellDoubleClick += DgvIssues_CellDoubleClick;
+
+            btnBack = new Button { Text = "Back", Width = 100, Height = 36 };
+            UiTheme.StyleSecondary(btnBack);
+            btnBack.Click += (_, __) => Close();
+
+            var bottomBar = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Bottom,
+                FlowDirection = FlowDirection.RightToLeft,
+                Padding = new Padding(8),
+                AutoSize = true
+            };
+            bottomBar.Controls.Add(btnBack);
+
+            Controls.Add(dgvIssues);
+            Controls.Add(bottomBar);
+            dgvIssues.BringToFront();
+
+            // optional auto-refresh when returning focus
+            this.Activated += (_, __) => ReloadGrid();
+        }
+
+        private void ReloadGrid()
+        {
+            dgvIssues.Rows.Clear();
             foreach (var issue in IssueRepository.GetAll())
             {
                 dgvIssues.Rows.Add(
@@ -44,17 +73,30 @@ namespace PROG7312_POE_Part1.UI
                     issue.CreatedAt.ToString("g")
                 );
             }
+        }
 
-            btnBack = new Button
+        private void DgvIssues_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            var idObj = dgvIssues.Rows[e.RowIndex].Cells["Id"].Value;
+            if (idObj == null) return;
+
+            if (Guid.TryParse(idObj.ToString(), out var issueId))
             {
-                Text = "Back to Main Menu",
-                Location = new Point(640, 400),
-                Size = new Size(140, 36)
-            };
-            btnBack.Click += (_, __) => Close();
-
-            Controls.Add(dgvIssues);
-            Controls.Add(btnBack);
+                var issue = IssueRepository.FindById(issueId);
+                if (issue != null)
+                {
+                    using (var details = new IssueDetailsForm(issue))
+                    {
+                        details.ShowDialog(this);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Issue could not be found.", "Not Found",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
         }
     }
 }

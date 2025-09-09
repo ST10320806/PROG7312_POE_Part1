@@ -7,104 +7,70 @@ namespace PROG7312_POE_Part1.UI
 {
     public class MainForm : Form
     {
-        private Label lblTitle;
-        private Label lblNote;
-
         private Button btnReportIssues;
-        private Button btnViewAllIssues;   // <- Added
+        private Button btnViewAllIssues;
         private Button btnEvents;
         private Button btnStatus;
 
         public MainForm()
         {
+            UiTheme.ApplyFormDefaults(this, new Size(640, 420));
             Text = "Municipal Services - Main Menu";
-            StartPosition = FormStartPosition.CenterScreen;
-            MinimumSize = new Size(560, 360);
-            Font = new Font("Segoe UI", 10);
 
-            // Background colour
-            BackColor = Color.WhiteSmoke;
+            Controls.Add(UiTheme.BuildHeader("Municipal Services", "Welcome"));
+            Controls.Add(UiTheme.BuildFooter());
 
-            lblTitle = new Label
+            // Main content area
+            var layout = new TableLayoutPanel
             {
-                Text = "Welcome to Municipal Services",
-                Font = new Font("Segoe UI Semibold", 18),
+                Dock = DockStyle.Fill,
+                Padding = new Padding(16),
+                ColumnCount = 1,
+                RowCount = 6
+            };
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 8));      // spacer
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));         // intro
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));         // report
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));         // view
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));         // coming 1
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));     // grow
+
+            var lblIntro = new Label
+            {
+                Text = "Please select a task to continue:",
                 AutoSize = true,
-                Location = new Point(20, 20),
-                ForeColor = Color.DarkGreen
+                ForeColor = UiTheme.NeutralText
             };
 
-            btnReportIssues = new Button
-            {
-                Text = "Report Issues",
-                Location = new Point(24, 80),
-                Size = new Size(440, 44),
-                BackColor = Color.SeaGreen,
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat
-            };
+            btnReportIssues = new Button { Text = "Report Issues", Height = 44, Dock = DockStyle.Top };
+            UiTheme.StylePrimary(btnReportIssues);
             btnReportIssues.Click += (s, e) =>
             {
-                using (var f = new ReportIssueForm())
-                {
-                    Hide();
-                    f.ShowDialog();
-                    Show();
-                }
+                using (var f = new ReportIssueForm()) { Hide(); f.ShowDialog(); Show(); }
             };
 
-            // NEW: View All Reported Issues
-            btnViewAllIssues = new Button
-            {
-                Text = "View All Reported Issues",
-                Location = new Point(24, 134),
-                Size = new Size(440, 38),
-                BackColor = Color.SlateGray,
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat
-            };
+            btnViewAllIssues = new Button { Text = "View All Reported Issues", Height = 40, Dock = DockStyle.Top };
+            UiTheme.StyleSecondary(btnViewAllIssues);
             btnViewAllIssues.Click += (s, e) =>
             {
-                using (var f = new ViewIssuesForm())
-                {
-                    Hide();
-                    f.ShowDialog();
-                    Show();
-                }
+                using (var f = new ViewIssuesForm()) { Hide(); f.ShowDialog(); Show(); }
             };
 
-            btnEvents = new Button
-            {
-                Text = "Local Events & Announcements (Coming Soon)",
-                Location = new Point(24, 178),
-                Size = new Size(440, 38),
-                Enabled = false,
-                BackColor = Color.LightGray
-            };
+            btnEvents = new Button { Text = "Local Events & Announcements (Coming Soon)", Height = 40, Dock = DockStyle.Top };
+            UiTheme.StyleDisabled(btnEvents);
 
-            btnStatus = new Button
-            {
-                Text = "Service Request Status (Coming Soon)",
-                Location = new Point(24, 222),
-                Size = new Size(440, 38),
-                Enabled = false,
-                BackColor = Color.LightGray
-            };
+            btnStatus = new Button { Text = "Service Request Status (Coming Soon)", Height = 40, Dock = DockStyle.Top };
+            UiTheme.StyleDisabled(btnStatus);
 
-            lblNote = new Label
-            {
-                Text = "Only “Report Issues” and “View All Reported Issues” are available in this version.",
-                AutoSize = true,
-                ForeColor = Color.DimGray,
-                Location = new Point(24, 274)
-            };
+            layout.Controls.Add(new Panel { Height = 1, Dock = DockStyle.Top }, 0, 0);
+            layout.Controls.Add(lblIntro, 0, 1);
+            layout.Controls.Add(btnReportIssues, 0, 2);
+            layout.Controls.Add(btnViewAllIssues, 0, 3);
+            layout.Controls.Add(btnEvents, 0, 4);
+            layout.Controls.Add(btnStatus, 0, 5);
 
-            Controls.Add(lblTitle);
-            Controls.Add(btnReportIssues);
-            Controls.Add(btnViewAllIssues);   // <- Ensure it’s added to Controls
-            Controls.Add(btnEvents);
-            Controls.Add(btnStatus);
-            Controls.Add(lblNote);
+            Controls.Add(layout);
+            layout.BringToFront();
         }
     }
 }
