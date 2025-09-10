@@ -2,7 +2,9 @@
 using System.Drawing;
 using System.Windows.Forms;
 using PROG7312_POE_Part1.UI;
-
+///References
+///ClaudeAI was used for debugging and code checking
+///
 namespace PROG7312_POE_Part1.UI
 {
     public class MainForm : Form
