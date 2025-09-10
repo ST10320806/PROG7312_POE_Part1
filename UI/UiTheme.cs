@@ -10,11 +10,11 @@ namespace PROG7312_POE_Part1.UI
     public static class UiTheme
     {
         // South African government-flavoured palette (accessible contrasts)
-        public static readonly Color BrandDark = Color.FromArgb(0x00, 0x5A, 0x30); // deep green
-        public static readonly Color BrandMid = Color.FromArgb(0x00, 0x7E, 0x3A); // accent green
-        public static readonly Color BrandLight = Color.FromArgb(0xE9, 0xF3, 0xEC); // pale green background
-        public static readonly Color NeutralBG = Color.WhiteSmoke;
-        public static readonly Color NeutralText = Color.FromArgb(33, 37, 41);
+        public static readonly Color BrandDark    = Color.FromArgb(0x00, 0x5A, 0x30); // deep green
+        public static readonly Color BrandMid     = Color.FromArgb(0x00, 0x7E, 0x3A); // accent green
+        public static readonly Color BrandLight   = Color.FromArgb(0xE9, 0xF3, 0xEC); // pale green background
+        public static readonly Color NeutralBG    = Color.WhiteSmoke;
+        public static readonly Color NeutralText  = Color.FromArgb(33, 37, 41);
 
         public static void ApplyFormDefaults(Form f, Size? minSize = null)
         {
