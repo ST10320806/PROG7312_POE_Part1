@@ -4,21 +4,18 @@ using System.Windows.Forms;
 
 namespace PROG7312_POE_Part1.UI
 {
-    /// <summary>
-    /// Central place for colours/controls so the whole app feels consistent and “official”.
-    /// </summary>
+    
     public static class UiTheme
     {
-        // South African government-flavoured palette (accessible contrasts)
-        public static readonly Color BrandDark    = Color.FromArgb(0x00, 0x5A, 0x30); // deep green
-        public static readonly Color BrandMid     = Color.FromArgb(0x00, 0x7E, 0x3A); // accent green
-        public static readonly Color BrandLight   = Color.FromArgb(0xE9, 0xF3, 0xEC); // pale green background
+        public static readonly Color BrandDark    = Color.FromArgb(0x00, 0x5A, 0x30); 
+        public static readonly Color BrandMid     = Color.FromArgb(0x00, 0x7E, 0x3A); 
+        public static readonly Color BrandLight   = Color.FromArgb(0xE9, 0xF3, 0xEC); 
         public static readonly Color NeutralBG    = Color.WhiteSmoke;
         public static readonly Color NeutralText  = Color.FromArgb(33, 37, 41);
 
         public static void ApplyFormDefaults(Form f, Size? minSize = null)
         {
-            f.AutoScaleMode = AutoScaleMode.Dpi;        // scales for different DPIs
+            f.AutoScaleMode = AutoScaleMode.Dpi;        
             f.StartPosition = FormStartPosition.CenterScreen;
             f.Font = new Font("Segoe UI", 10f);
             f.BackColor = NeutralBG;
@@ -52,10 +49,10 @@ namespace PROG7312_POE_Part1.UI
                 Location = new Point(22, 46)
             };
 
-            // (Optional) small crest placeholder at the right
+       
             var crest = new Label
             {
-                Text = "🛡️", // swap for a PictureBox with your PNG if you have one
+                Text = "🛡️", 
                 AutoSize = true,
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 20f),

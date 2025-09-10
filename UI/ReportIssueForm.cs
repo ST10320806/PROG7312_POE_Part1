@@ -31,7 +31,6 @@ namespace PROG7312_POE_Part1.UI
 
             tips = new ToolTip();
 
-            // 2-column grid for labels/inputs
             var grid = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -39,8 +38,8 @@ namespace PROG7312_POE_Part1.UI
                 ColumnCount = 2,
                 RowCount = 8
             };
-            grid.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140)); // labels
-            grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));  // inputs
+            grid.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140)); 
+            grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));  
 
             var lblLocation = new Label { Text = "Location:", AutoSize = true };
             UiTheme.StyleSectionHeader(lblLocation);
@@ -52,7 +51,7 @@ namespace PROG7312_POE_Part1.UI
             cmbCategory = new ComboBox { Dock = DockStyle.Left, Width = 260, DropDownStyle = ComboBoxStyle.DropDownList };
             cmbCategory.Items.AddRange(new object[]
             {
-                "Sanitation", "Roads", "Water", "Electricity", "Stormwater", "Parks & Recreation", "Other"
+                "Sanitation", "Roads", "Water", "Electricity", "Flooding", "Recreation", "Other"
             });
 
             var lblDescription = new Label { Text = "Description:", AutoSize = true };
@@ -62,7 +61,7 @@ namespace PROG7312_POE_Part1.UI
             var lblAttachments = new Label { Text = "Attachments:", AutoSize = true };
             UiTheme.StyleSectionHeader(lblAttachments);
 
-            // attachments area with a right-aligned button
+            //Code for the attachments area
             lstAttachments = new ListBox { Dock = DockStyle.Fill, Height = 90 };
             btnAttach = new Button { Text = "Attach Files…", Width = 130, Height = 32 };
             UiTheme.StyleSecondary(btnAttach);
@@ -74,11 +73,11 @@ namespace PROG7312_POE_Part1.UI
             attachRow.Controls.Add(lstAttachments, 0, 0);
             attachRow.Controls.Add(btnAttach, 1, 0);
 
-            // engagement
+            //Adding progress bar and encouraging message
             pbEngagement = new ProgressBar { Dock = DockStyle.Fill, Minimum = 0, Maximum = 100, Value = 0 };
             lblEncouragement = new Label { Text = "Let’s make your report as clear as possible.", AutoSize = true, ForeColor = Color.SteelBlue };
 
-            // buttons bar
+            //Submit and back buttons
             btnSubmit = new Button { Text = "Submit", Width = 100, Height = 36 };
             UiTheme.StylePrimary(btnSubmit);
             btnSubmit.Click += BtnSubmit_Click;
@@ -97,26 +96,19 @@ namespace PROG7312_POE_Part1.UI
             bottomBar.Controls.Add(btnBack);
             bottomBar.Controls.Add(btnSubmit);
 
-            // add rows to grid
+            //Adding rows
             grid.Controls.Add(lblLocation, 0, 0);
             grid.Controls.Add(txtLocation, 1, 0);
-
             grid.Controls.Add(lblCategory, 0, 1);
             grid.Controls.Add(cmbCategory, 1, 1);
-
             grid.Controls.Add(lblDescription, 0, 2);
             grid.Controls.Add(rtbDescription, 1, 2);
-
             grid.Controls.Add(lblAttachments, 0, 3);
             grid.Controls.Add(attachRow, 1, 3);
-
             grid.Controls.Add(new Label { Text = "Completion:", AutoSize = true }, 0, 4);
             grid.Controls.Add(pbEngagement, 1, 4);
-
             grid.Controls.Add(new Label { Text = "", AutoSize = true }, 0, 5);
             grid.Controls.Add(lblEncouragement, 1, 5);
-
-            // Dock order: header (Top), footer (Bottom), bottomBar (Bottom), grid (Fill)
             Controls.Add(bottomBar);
             Controls.Add(grid);
             grid.BringToFront();
@@ -128,12 +120,13 @@ namespace PROG7312_POE_Part1.UI
                 Multiselect = true
             };
 
-            // engagement updates
+            // updating progress bar and encouraging messages
             txtLocation.TextChanged += (_, __) => UpdateEngagement();
             cmbCategory.SelectedIndexChanged += (_, __) => UpdateEngagement();
             rtbDescription.TextChanged += (_, __) => UpdateEngagement();
         }
-
+        //*********************************************************************************************************************
+        //Button for attaching a file
         private void BtnAttach_Click(object sender, EventArgs e)
         {
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
@@ -146,7 +139,8 @@ namespace PROG7312_POE_Part1.UI
                 UpdateEngagement();
             }
         }
-
+        //*********************************************************************************************************************
+        //Event handling to prevent incomplete reports from being submitted
         private void BtnSubmit_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtLocation.Text))
@@ -185,14 +179,14 @@ namespace PROG7312_POE_Part1.UI
                 MessageBoxIcon.Information
             );
 
-            // reset
             txtLocation.Clear();
             cmbCategory.SelectedIndex = -1;
             rtbDescription.Clear();
             lstAttachments.Items.Clear();
             UpdateEngagement();
         }
-
+//*********************************************************************************************************************
+        //Method for updating the progress bar and encouraging messages
         private void UpdateEngagement()
         {
             int score = 0;
@@ -222,3 +216,5 @@ namespace PROG7312_POE_Part1.UI
         }
     }
 }
+//******************************************************************End Of File******************************************************************
+

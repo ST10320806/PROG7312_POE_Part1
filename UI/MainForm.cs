@@ -20,7 +20,6 @@ namespace PROG7312_POE_Part1.UI
             Controls.Add(UiTheme.BuildHeader("Municipal Services", "Welcome"));
             Controls.Add(UiTheme.BuildFooter());
 
-            // Main content area
             var layout = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -28,12 +27,12 @@ namespace PROG7312_POE_Part1.UI
                 ColumnCount = 1,
                 RowCount = 6
             };
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 8));      // spacer
-            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));         // intro
-            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));         // report
-            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));         // view
-            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));         // coming 1
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));     // grow
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 8));      
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));         
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));         
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));         
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));         
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));     
 
             var lblIntro = new Label
             {
@@ -74,3 +73,4 @@ namespace PROG7312_POE_Part1.UI
         }
     }
 }
+//******************************************************************End Of File******************************************************************

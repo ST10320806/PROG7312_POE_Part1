@@ -18,6 +18,7 @@ namespace PROG7312_POE_Part1.UI
         private ListBox lstAttachments;
         private Button btnOpenAttachment, btnClose;
 
+        //*********************************************************************************************************************
         public IssueDetailsForm(Issue issue)
         {
             _issue = issue ?? throw new ArgumentNullException(nameof(issue));
@@ -38,7 +39,7 @@ namespace PROG7312_POE_Part1.UI
             grid.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 160));
             grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
 
-            // rows
+            //Adding rows to show the details of the report
             AddReadOnlyRow(grid, "Reference ID:", out txtId, 0);
             AddReadOnlyRow(grid, "Location:", out txtLocation, 1);
             AddReadOnlyRow(grid, "Category:", out txtCategory, 2);
@@ -56,7 +57,7 @@ namespace PROG7312_POE_Part1.UI
             lstAttachments = new ListBox { Dock = DockStyle.Fill, Height = 140 };
             btnOpenAttachment = new Button { Text = "Open Selected", Width = 130, Height = 32 };
             UiTheme.StyleSecondary(btnOpenAttachment);
-            btnOpenAttachment.Click += (_, __) => OpenSelectedAttachment();
+            btnOpenAttachment.Click += (_, __) => OpenAttachment();
 
             var attachRow = new TableLayoutPanel { ColumnCount = 2, Dock = DockStyle.Fill };
             attachRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
@@ -84,7 +85,7 @@ namespace PROG7312_POE_Part1.UI
             Controls.Add(grid);
             grid.BringToFront();
 
-            LoadIssue();
+            GetIssue();
         }
 
         private void AddReadOnlyRow(TableLayoutPanel grid, string label, out TextBox textBox, int rowIndex)
@@ -96,7 +97,7 @@ namespace PROG7312_POE_Part1.UI
             grid.Controls.Add(textBox, 1, rowIndex);
         }
 
-        private void LoadIssue()
+        private void GetIssue()
         {
             txtId.Text = _issue.Id.ToString();
             txtLocation.Text = _issue.Location;
@@ -110,7 +111,8 @@ namespace PROG7312_POE_Part1.UI
                 lstAttachments.Items.Add(path);
         }
 
-        private void OpenSelectedAttachment()
+        //Code for viewing an attachment
+        private void OpenAttachment()
         {
             if (lstAttachments.SelectedItem == null)
             {
@@ -137,3 +139,4 @@ namespace PROG7312_POE_Part1.UI
         }
     }
 }
+//******************************************************************End Of File******************************************************************

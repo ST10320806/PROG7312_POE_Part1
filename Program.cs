@@ -8,9 +8,7 @@ namespace PROG7312_POE_Part1
 {
     internal static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+        
         [STAThread]
         static void Main()
         {

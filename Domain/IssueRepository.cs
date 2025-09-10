@@ -5,35 +5,27 @@ using PROG7312_POE_Part1.Domain;
 
 namespace PROG7312_POE_Part1.Domain
 {
-    /// <summary>
-    /// In-memory storage backed by LinkedList<Issue>.
-    /// LinkedList is a valid “appropriate data structure” choice for the brief.
-    /// </summary>
+    
     public static class IssueRepository
     {
+        //Creating linked-list
         private static readonly LinkedList<Issue> _issues = new LinkedList<Issue>();
 
-        /// <summary>
-        /// Add a new issue to the end of the linked list.
-        /// </summary>
+        
+        //Adding issue to list
         public static void Add(Issue issue)
         {
             _issues.AddLast(issue);
         }
 
-        /// <summary>
-        /// Enumerate all issues (read-only).
-        /// </summary>
+        
         public static IEnumerable<Issue> GetAll()
         {
-            // LinkedList implements IEnumerable, so we just expose it
             foreach (var issue in _issues)
                 yield return issue;
         }
 
-        /// <summary>
-        /// Find a single issue by Id (linear search).
-        /// </summary>
+        //Code for fetching a reported issue by its id (to be implemented later)
         public static Issue FindById(Guid id)
         {
             var node = _issues.First;
@@ -46,9 +38,7 @@ namespace PROG7312_POE_Part1.Domain
             return null;
         }
 
-        /// <summary>
-        /// Update an issue's status by Id. Returns true if found and updated.
-        /// </summary>
+        //Updating the status on a reported issue (to be implemented later)
         public static bool UpdateStatus(Guid id, IssueStatus newStatus)
         {
             var issue = FindById(id);
@@ -57,9 +47,7 @@ namespace PROG7312_POE_Part1.Domain
             return true;
         }
 
-        /// <summary>
-        /// Remove an issue by Id. Returns true if a node was removed.
-        /// </summary>
+        //code for removal of a reported issue (to be implemented later)
         public static bool Remove(Guid id)
         {
             var node = _issues.First;
@@ -75,9 +63,7 @@ namespace PROG7312_POE_Part1.Domain
             return false;
         }
 
-        /// <summary>
-        /// (Optional) Get the most recent N issues efficiently by walking from the tail.
-        /// </summary>
+        //Getting most recent issues (to be implemented later)
         public static IEnumerable<Issue> GetMostRecent(int count)
         {
             var node = _issues.Last;
@@ -90,10 +76,9 @@ namespace PROG7312_POE_Part1.Domain
             }
         }
 
-        /// <summary>
-        /// Simple count.
-        /// </summary>
+        
         public static int Count => _issues.Count;
     }
 }
+//******************************************************************End Of File******************************************************************
 
